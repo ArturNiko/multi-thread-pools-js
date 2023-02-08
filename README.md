@@ -34,7 +34,7 @@ Threads.limit
 ```
 <br />
 
-### Individual threads.
+### Individual threads
 
 After we initialized threads we can access them.
 
