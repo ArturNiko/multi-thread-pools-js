@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module">
-      import Threads from "./src/main.js"
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+    import Threads from "./src/main.js"
 
-      window.Threads = Threads
-      Threads.initialize(2)
-      Threads.test()
+    window.Threads = Threads
+    Threads.initialize(20)
+    Object.values(Threads).forEach(thread => {
+        thread.create(testFunc)
+    })
 
-    </script>
-  </body>
+    console.log(await Threads.Thread_2.run(Threads.Thread_2.name))
+
+    Threads.test()
+
+
+    function testFunc(message) {
+        const start = performance.now()
+        let value = 0
+        for (let i = 0; i < 1000000000; i++) value += i
+        postMessage({start: performance.now() - start, param: message.data})
+    }
+</script>
+</body>
 </html>
