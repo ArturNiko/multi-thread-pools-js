@@ -139,7 +139,7 @@ Threads.Thread_2.isSleeping
 
 ### Notes
 
-Thread count goes from 2 up to `navigator.deviceMemory` value because 1 is the main thread.
+Thread count goes from 2 up to `navigator.deviceMemory / 2 - 1` value because 1 is the main thread.
 
 You can create more threads than you have, but it's not recommended, so I limited it.
 
