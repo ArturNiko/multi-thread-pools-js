@@ -1,14 +1,7 @@
-/**
- * Instead of our method, now we will you use this pool class to manage the flow and more...
- *
- */
-
-type Pool = Function[]
-
-export default class Queuer{
+export default class Pool{
 
     #count: number = 0
-    #pool: Pool = []
+    #pool: Function[] = []
 
     public constructor(...method: Function[]) {
         this.push(...method)
