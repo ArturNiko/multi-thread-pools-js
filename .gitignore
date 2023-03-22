@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Configs
+vite.config.js
+
 # Locks
 pnpm-lock.yaml
 
