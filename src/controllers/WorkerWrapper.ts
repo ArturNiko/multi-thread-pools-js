@@ -1,18 +1,12 @@
+import {Nullable} from "../helpers/Types"
+import {WorkerWrapperInterface} from "../helpers/Interfaces"
+
 import ThreadsController from "./ThreadsController"
 
-interface WorkerWrapperInterface {
-    create: (method: Nullable<Function>) => void,
-    run: (message: any) => Promise<any>,
-    restart: () => void,
-    terminate: () => void,
-    softTerminate: () => void,
-    destroy: () => void,
-}
 
-type Nullable<T> = T | null | undefined
+
 
 type State = States.RUNNING | States.READY | States.SLEEPING
-
 enum States{
     RUNNING = 'running',
     READY = 'ready',

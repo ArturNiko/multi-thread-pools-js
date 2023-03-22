@@ -1,16 +1,8 @@
 import WorkerWrapper from "./WorkerWrapper"
+import {ThreadsInterface} from "../helpers/Interfaces"
 
-interface ThreadsInterface {
-    initialize: () => void,
-    test: (info: boolean) => void,
-    race: (message: any) => Promise<any>,
-    all: (message: any) => Promise<any>,
-
-}
-
-type Mode = Modes.REGULAR | Modes.RACE
-
-enum Modes {
+export type Mode = Modes.REGULAR | Modes.RACE
+export enum Modes {
     REGULAR = 'regular',
     RACE = 'race',
 }
