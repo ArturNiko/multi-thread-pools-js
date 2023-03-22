@@ -8,25 +8,34 @@
 <body>
 <div id="app"></div>
 <script type="module">
-    import Threads from "./src/main.js"
+    import Threads from "./dist/main.js"
 
-    window.Threads = Threads
-    Threads.initialize(20)
-    Object.values(Threads).forEach(thread => {
-        thread.create(testFunc)
-    })
+    //example part
+    async function initializeThreads(){
+        window.Threads = Threads
+        Threads.initialize(20)
+        console.log(Object.values(Threads))
+        Object.values(Threads).forEach(thread => {
+            thread.create(testFunc)
+        })
 
-    console.log(await Threads.Thread_2.run(Threads.Thread_2.name))
-
-    Threads.test()
+        console.log(await Threads.Thread_2.run(Threads.Thread_2.name))
 
 
-    function testFunc(message) {
-        const start = performance.now()
-        let value = 0
-        for (let i = 0; i < 1000000000; i++) value += i
-        postMessage({start: performance.now() - start, param: message.data})
+        console.log(await Threads.test(false))
+
+
+        function testFunc(message) {
+            const start = performance.now()
+            let value = 0
+            for (let i = 0; i < 1000000000; i++) value += i
+            postMessage({exec_time: performance.now() - start, message: message.data})
+        }
     }
+
+    initializeThreads().then()
+
+
 </script>
 </body>
 </html>

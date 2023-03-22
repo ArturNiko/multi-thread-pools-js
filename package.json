@@ -1,17 +1,17 @@
 {
   "name": "@a4turp/multithread-js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Artur Papikian",
   "license": "MIT",
   "description": "Light and easy JS tool for accessing multiple threads via web workers.",
   "type": "module",
-  "main": "src/GIFPlayerV2.js",
+  "main": "dist/main.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ArturNiko/multithread-js.git"
   },
   "devDependencies": {
-    "vite": "^4.0.0"
+    "vite": "^4.2.0"
   },
   "keywords": [
     "multithreading",

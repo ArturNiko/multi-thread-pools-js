@@ -1,5 +1,5 @@
 
-## Multithread-js
+## multithread-js
 
 #### Light and easy JS tool for accessing multiple threads via web workers.
 <br />
@@ -14,7 +14,7 @@ import Threads from 'multithread-js'
 /**
  * @param Number
  * limits the number of created threads. 
- * Maximum number is 'navigator.deviceMemory / 2 - 1' value.
+ * Maximum number is 'navigator.hardwareConcurrency / 2 - 1' value.
  * 
  * Initializes new threads/worker wrappers.
  */
@@ -65,7 +65,7 @@ Threads.mode
 After we initialized threads we can access them.
 
 ```javascript
-...
+// .....
 
 /**
  * Passed value is accessable under data subkey of the parameter.
@@ -139,7 +139,7 @@ Threads.Thread_2.isSleeping
 
 ### Notes
 
-Thread count goes from 2 up to `navigator.deviceMemory / 2 - 1` value because 1 is the main thread.
+Thread count goes from 2 up to `navigator.hardwareConcurrency` value because 1 is the main thread.
 
 You can create more threads than you have, but it's not recommended, so I limited it.
 

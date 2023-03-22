@@ -8,9 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+src
 dist-ssr
 *.local
+
+# Configs
+vite.config.js
+tsconfig.json
+
+# Locks
+pnpm-lock.yaml
 
 # Editor directories and files
 .vscode/*
