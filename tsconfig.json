@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES3",
+    "target": "ES2015",
     "useDefineForClassFields": true,
     "lib": ["DOM", "ES2017"],
     "strict": true,
