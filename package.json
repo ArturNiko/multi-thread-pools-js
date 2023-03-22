@@ -1,6 +1,6 @@
 {
   "name": "@a4turp/multithread-js",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Artur Papikian",
   "license": "MIT",
   "description": "Light and easy JS tool for accessing multiple threads via web workers.",
