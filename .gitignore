@@ -11,10 +11,6 @@ node_modules
 dist-ssr
 *.local
 
-# Configs
-vite.config.js
-tsconfig.json
-
 # Locks
 pnpm-lock.yaml
 
