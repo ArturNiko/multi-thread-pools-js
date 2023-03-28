@@ -1,6 +1,6 @@
 {
-  "name": "@a4turp/multithread-js",
-  "version": "0.3.2",
+  "name": "multi-thread-pools",
+  "version": "0.4.0",
   "author": "Artur Papikian",
   "license": "MIT",
   "description": "Light and easy JS tool for accessing multiple threads via web workers.",
@@ -16,9 +16,10 @@
   "keywords": [
     "multithreading",
     "multithread",
-    "workers",
     "multicore",
-    "javascript",
-    "js"
+    "workers",
+    "pools",
+    "typescript",
+    "ts"
   ]
 }
