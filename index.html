@@ -8,28 +8,32 @@
 <body>
 <div id="app"></div>
 <script type="module">
-    import Threads from "./dist/main.js"
+    import MTPC from "./dist/main.js"
 
     //example part
-    async function initializeThreads(){
-        window.Threads = Threads
-        Threads.initialize(20)
-        console.log(Object.values(Threads))
-        Object.values(Threads).forEach(thread => {
-            thread.create(testFunc)
-        })
+    async function initializeThreads() {
+        window.MTPC = MTPC
+        MTPC.initialize(20)
+        MTPC.threads.forEach(thread => thread.add(testFunc, testFunc))
 
-        console.log(await Threads.Thread_2.run(Threads.Thread_2.name))
+        MTPC.threads[0].mode = 'fkarr'
+        console.log(MTPC.threads[0].pool)
+        console.log(await MTPC.threads[0].run('first run 🥸.'))
+        console.log(MTPC.threads[0].pool)
 
 
-        console.log(await Threads.test(false))
 
 
         function testFunc(message) {
             const start = performance.now()
             let value = 0
             for (let i = 0; i < 1000000000; i++) value += i
-            postMessage({exec_time: performance.now() - start, message: message.data})
+
+            const lastTime = message.data.exec_time ?? 0
+            postMessage({
+                exec_time: performance.now() - start + lastTime,
+                message: message.data
+            })
         }
     }
 

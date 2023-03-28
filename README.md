@@ -1,146 +1,288 @@
 
-## multithread-js
+# MultiThreadPools
 
-#### Light and easy JS tool for accessing multiple threads via web workers.
+### Light and easy JS tool for accessing multiple threads via web workers.
 <br />
 
 
+## Notes
 
-### General
+------------------------------------------------------------------------------------------------------------
+
+Works only with `import`.   
+Current version of the module is `< 1.0.0`, so it could be unstable.
+
+
+## General
+
+------------------------------------------------------------------------------------------------------------
 
 ```javascript
-import Threads from 'multithread-js'
+import MTPC from 'multi-thread-pools'
 
 /**
  * @param Number
- * limits the number of created threads. 
- * Maximum number is 'navigator.hardwareConcurrency / 2 - 1' value.
+ * Limits the number of created threads. 
+ * Maximum number is 'navigator.hardwareConcurrency - 1' value.
  * 
- * Initializes new threads/worker wrappers.
+ * @description Initializes new threads/worker wrappers.
  */
-Threads.initialize(4)
+MTPC.initialize(999)
 
+
+```
+
+```javascript
 /**
- * Runs a showcase.
+ * @param Boolean
+ * Log out showcase notifications.
+ * 
+ * @description Runs a showcase.
  */
-Threads.test()
+MTPC.test(true)
+```
 
+```javascript
 /**
+ * @param any
+ * The Parameter which is going to be passed to the functions of every worker in every thread pool.
  * @return Promise<Any>
- * Runs every available thread and returns the fastest resolved response.
+ *     
+ * @description Runs every available thread pool and returns the fastest resolved response.
  */
-await Threads.race()
+await MTPC.race()
+```
 
-
+```javascript
 /**
+ * @param any
+ * The Parameter which is going to be passed to the functions of every worker in every thread pool.
  * @return Promise<Array>
- * Runs every available thread and returns every resolved response in array.
+ *     
+ * @description Runs every available thread pool and returns every resolved response in array.
  */
-await Threads.all()
+await MTPC.all()
+```
+
+```javascript
+/**
+ * @description Restarts every thread pool.
+ */
+MTPC.restart()
+```
+
+```javascript
+// Getters
+MTPC.limit //Thread count limit.
+MTPC.mode //Threads controller mode: regular | race.
+```
+
+```javascript
+// Setters
 
 /**
- * Restarts every thread.
- */
-Threads.restart()
-
-/**
- * @return Number
- * Shows thread count limit.
+ * @type 'keep_alive'|'fkarr'|'remove'
+ * @description sets pool mode for every thread pool.
+ * 'keep_alive' After running thread, all workers remain.
+ * 'fkarr' After running thread, only irst worker remains.
+ * 'remove' After running thread, all workers are getting removed.
  *
  */
-Threads.limit
-
-/**
- * @return String
- * Shows threads controller mode: regular | race.
- *
- */
-Threads.mode
-
+MTPC.threadsMode
 ```
 <br />
 
-### Individual threads
+## Individual pool
 
-After we initialized threads we can access them.
+------------------------------------------------------------------------------------------------------------
+
+After we initialized threads we can access our pools.
 
 ```javascript
-// .....
 
 /**
- * Passed value is accessable under data subkey of the parameter.
+ *  @description 
+ *      Passed value is accessable under data subkey of the parameter.
+ *      Chained function will get computed message of previous function.
  */
-
 function testFunc(message) {
     const start = performance.now()
     let value = 0
     for (let i = 0; i < 1000000000; i++) value += i
-    
+
+    const lastTime = message.data.exec_time ?? 0
+
     //postMessage is mandatory and should be used instead of return
-    postMessage({start: performance.now() - start, param: message.data})
+    postMessage({
+        exec_time: performance.now() - start + lastTime,
+        message: message.data
+    })
 }
 
+MTPC.threads[0].add(testFunc, /* ... */)
+```
+
+```javascript
+/**
+ * @param any
+ * The Parameter which is going to be passed to the functions of every worker.
+ * @return Promise<any>
+ *
+ * @description Runs every worker one after the other in the pool.
+ */
+MTPC.threads[0].run('your massage')
+```
+
+```javascript
+/**
+ * @param Number
+ * Position of the worker in array.
+ * 
+ * @description Removes worker from the pool.
+ */
+MTPC.threads[0].remove(0)
+```
+
+```javascript
+/**
+ * @description Removes last worker from the pool.
+ */
+MTPC.threads[0].pop()
+```
+
+```javascript
+/**
+ * @description Clears the pool.
+ */
+MTPC.threads[0].clear()
+```
+
+```javascript
+/**
+ * @description Terminates only the worker in the pool.
+ */
+MTPC.threads[0].softTerminate()
+```
+
+```javascript
+/**
+ * @description Terminates the worker and its settings in the pool.
+ */
+MTPC.threads[0].terminate()
+```
+
+```javascript
+/**
+ * @description Restarts workers in the pool. 
+ */
+MTPC.threads[0].restart()
+```
+
+```javascript
+// Getters
+MTPC.threads[0].state //State of the pool.
+MTPC.threads[0].pool //Workers array.
+MTPC.threads[0].name //Name of the pool.
+MTPC.threads[0].mode //Pool mode 'keep_alive'|'fkarr'|'remove'.
+
+MTPC.threads[0].isKeepingAlive //Pool keeps workers alive?
+MTPC.threads[0].isFKARR //Pool keeps only first worker alive?
+MTPC.threads[0].isRemoving //Pool removes all workers?
+```
+
+```javascript
+// Setters
+
+/**
+ * @type 'keep_alive'|'fkarr'|'remove'
+ * @description sets pool mode.
+ * 'keep_alive' After running thread, all workers remain.
+ * 'fkarr' After running thread, only irst worker remains.
+ * 'remove' After running thread, all workers are getting removed.
+ * 
+ */
+MTPC.threads[0].pool[0].mode
+```
+
+<br />
+
+## Individual thread
+
+------------------------------------------------------------------------------------------------------------
+
+After adding workers in our thread pools, we can access each of them in `pool` sub key of WorkerPool class.
+
+```javascript
+// .....
+
+function testFunc(message) { /*...*/ }
 
 /**
  * @param Function?
- * Function that will be called every time, when thread is called.
+ * Function that will be called every time, when worker is called.
  * If no function passed, 'create' will be ignored.
  * 
- * Creates worker for this thread.
+ * @description Initializes worker in certain thread pool.
  */
 
-Threads.Thread_2.create(testFunc)
+MTPC.threads[0].pool[0].initialize(testFunc, testFunc)
+```
 
+```javascript
 /**
  * @param any
- * Parameter that will be passed to the function.
+ * The Parameter which is going to be passed to the function.
+ * @return Promise<any>
  * 
- * Executes the thread function.
+ * @description Executes the worker function.
  */
-await Threads.Thread_2.run(2)
+await MTPC.threads[0].pool[0].run('your message')
+```
 
-
+```javascript
 /**
- * Restarts the thread.
+ * @description Restarts the worker.
  */
-Threads.Thread_2.restart()
+MTPC.threads[0].pool[0].restart()
+```
 
+```javascript
 /**
- * Terminates only the worker.
+ * @description Terminates only the worker.
  */
-Threads.Thread_2.softTerminate()
+MTPC.threads[0].pool[0].softTerminate()
+```
 
+```javascript
 /**
- * Terminates the worker and its settings.
+ * @description Terminates the worker and its settings.
  */
-Threads.Thread_2.terminate()
+MTPC.threads[0].pool[0].terminate()
+```
 
-/**
- * Terminates the worker and destroys the object.
- */
-Threads.Thread_2.destroy()
+```javascript
+// Getters
+MTPC.threads[0].pool[0].state //state of the worker.
+MTPC.threads[0].pool[0].method //eval(method).
+MTPC.threads[0].pool[0].bytes //uint8 array buffer of method.
+MTPC.threads[0].pool[0].url //worker url.
 
-
-/**
- * Getters.
- */
-Threads.Thread_2.state
-Threads.Thread_2.method
-Threads.Thread_2.bytes
-Threads.Thread_2.url
-Threads.Thread_2.callback
-Threads.Thread_2.name
-Threads.Thread_2.isReady
-Threads.Thread_2.isRunning
-Threads.Thread_2.isSleeping
-
+MTPC.threads[0].pool[0].isReady //worker is ready?
+MTPC.threads[0].pool[0].isRunning //worker is running?
+MTPC.threads[0].pool[0].isSleeping //worker is sleeping?
 ```
 <br />
 
-### Notes
+## Changes
 
-Thread count goes from 2 up to `navigator.hardwareConcurrency` value because 1 is the main thread.
+------------------------------------------------------------------------------------------------------------
 
-You can create more threads than you have, but it's not recommended, so I limited it.
+| Version |  Type   |   Date   | Description                                                   |
+|---------|:-------:|:--------:|:--------------------------------------------------------------|
+| 0.2.0   | change  | 10.02.23 | Callback is not editable.                                     |
+| 0.4.0   | change  | 28.03.23 | Threads limit changed to `navigator.hardwareConcurrency` - 1. |
+| 0.4.0   | change  | 28.03.23 | Threads are located in 'threads' array parameter.             |
+| 0.4.0   | change  | 28.03.23 | Threads are pools of worker wrappers.                         |
+| 0.4.0   | feature | 28.03.23 | Pools are able to chain functions 🤩.                         |
+| 0.4.0   | change  | 28.03.23 | Workers are now getting initialized my `initialize` method.   |
 
-Since version 0.2.0 callback is not editable.

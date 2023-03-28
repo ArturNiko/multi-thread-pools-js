@@ -18,40 +18,25 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _WorkerWrapper_worker, _WorkerWrapper_method, _WorkerWrapper_methodBytes, _WorkerWrapper_blob, _WorkerWrapper_url, _WorkerWrapper_state, _WorkerWrapper_response, _WorkerWrapper_responseResolve, _WorkerWrapper_controller, _WorkerWrapper_name;
-var States;
-(function (States) {
-    States["RUNNING"] = "running";
-    States["READY"] = "ready";
-    States["SLEEPING"] = "sleeping";
-})(States || (States = {}));
+var _WorkerWrapper_callback, _WorkerWrapper_worker, _WorkerWrapper_method, _WorkerWrapper_methodBytes, _WorkerWrapper_blob, _WorkerWrapper_url, _WorkerWrapper_state, _WorkerWrapper_response, _WorkerWrapper_responseResolve;
+import { WorkerState as State } from '../helpers/Types';
 export default class WorkerWrapper {
-    constructor(name, controller) {
+    constructor() {
+        _WorkerWrapper_callback.set(this, (message) => __awaiter(this, void 0, void 0, function* () {
+            __classPrivateFieldSet(this, _WorkerWrapper_response, message.data, "f");
+            __classPrivateFieldSet(this, _WorkerWrapper_state, State.READY, "f");
+            __classPrivateFieldGet(this, _WorkerWrapper_responseResolve, "f").call(this);
+        }));
         _WorkerWrapper_worker.set(this, void 0);
-        Object.defineProperty(this, "_callback", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: (message) => __awaiter(this, void 0, void 0, function* () {
-                __classPrivateFieldSet(this, _WorkerWrapper_response, message.data, "f");
-                __classPrivateFieldSet(this, _WorkerWrapper_state, States.READY, "f");
-                __classPrivateFieldGet(this, _WorkerWrapper_responseResolve, "f").call(this);
-            })
-        });
         _WorkerWrapper_method.set(this, null);
         _WorkerWrapper_methodBytes.set(this, null);
         _WorkerWrapper_blob.set(this, null);
         _WorkerWrapper_url.set(this, null);
-        _WorkerWrapper_state.set(this, void 0);
+        _WorkerWrapper_state.set(this, State.SLEEPING);
         _WorkerWrapper_response.set(this, null);
         _WorkerWrapper_responseResolve.set(this, function () { });
-        _WorkerWrapper_controller.set(this, void 0);
-        _WorkerWrapper_name.set(this, void 0);
-        __classPrivateFieldSet(this, _WorkerWrapper_name, name, "f");
-        __classPrivateFieldSet(this, _WorkerWrapper_controller, controller, "f");
-        __classPrivateFieldSet(this, _WorkerWrapper_state, States.SLEEPING, "f");
     }
-    create(method = null) {
+    initialize(method = null) {
         if (!this.isSleeping || (typeof method !== 'function' && __classPrivateFieldGet(this, _WorkerWrapper_method, "f") === null))
             return;
         __classPrivateFieldSet(this, _WorkerWrapper_method, method || __classPrivateFieldGet(this, _WorkerWrapper_method, "f"), "f");
@@ -59,55 +44,46 @@ export default class WorkerWrapper {
         __classPrivateFieldSet(this, _WorkerWrapper_blob, new Blob([__classPrivateFieldGet(this, _WorkerWrapper_methodBytes, "f")], { type: 'text/javascript' }), "f");
         __classPrivateFieldSet(this, _WorkerWrapper_url, URL.createObjectURL(__classPrivateFieldGet(this, _WorkerWrapper_blob, "f")), "f");
         __classPrivateFieldSet(this, _WorkerWrapper_worker, new Worker(__classPrivateFieldGet(this, _WorkerWrapper_url, "f")), "f");
-        __classPrivateFieldGet(this, _WorkerWrapper_worker, "f").onmessage = this._callback;
-        __classPrivateFieldSet(this, _WorkerWrapper_state, States.READY, "f");
+        __classPrivateFieldGet(this, _WorkerWrapper_worker, "f").onmessage = __classPrivateFieldGet(this, _WorkerWrapper_callback, "f");
+        __classPrivateFieldSet(this, _WorkerWrapper_state, State.READY, "f");
     }
     run(message = null) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isReady || !(__classPrivateFieldGet(this, _WorkerWrapper_worker, "f") instanceof Worker))
                 return;
             __classPrivateFieldGet(this, _WorkerWrapper_worker, "f").postMessage(message);
-            __classPrivateFieldSet(this, _WorkerWrapper_state, States.RUNNING, "f");
+            __classPrivateFieldSet(this, _WorkerWrapper_state, State.RUNNING, "f");
             return new Promise(resolve => {
                 __classPrivateFieldSet(this, _WorkerWrapper_responseResolve, () => resolve(__classPrivateFieldGet(this, _WorkerWrapper_response, "f")), "f");
             });
         });
-    }
-    restart() {
-        this.softTerminate();
-        this.create();
     }
     softTerminate() {
         if (this.isSleeping || !(__classPrivateFieldGet(this, _WorkerWrapper_worker, "f") instanceof Worker))
             return;
         __classPrivateFieldGet(this, _WorkerWrapper_worker, "f").terminate();
         __classPrivateFieldSet(this, _WorkerWrapper_worker, null, "f");
-        __classPrivateFieldSet(this, _WorkerWrapper_state, States.SLEEPING, "f");
+        __classPrivateFieldSet(this, _WorkerWrapper_state, State.SLEEPING, "f");
     }
     terminate() {
         if (this.isSleeping || !(__classPrivateFieldGet(this, _WorkerWrapper_worker, "f") instanceof Worker))
             return;
+        this.softTerminate();
         __classPrivateFieldSet(this, _WorkerWrapper_method, null, "f");
         __classPrivateFieldSet(this, _WorkerWrapper_methodBytes, null, "f");
         __classPrivateFieldSet(this, _WorkerWrapper_blob, null, "f");
         __classPrivateFieldSet(this, _WorkerWrapper_url, null, "f");
-        __classPrivateFieldGet(this, _WorkerWrapper_worker, "f").terminate();
-        __classPrivateFieldSet(this, _WorkerWrapper_worker, null, "f");
-        __classPrivateFieldSet(this, _WorkerWrapper_state, States.SLEEPING, "f");
     }
-    destroy() {
-        this.terminate();
-        delete __classPrivateFieldGet(this, _WorkerWrapper_controller, "f")[this.name];
-        //delete this
+    restart() {
+        this.softTerminate();
+        this.initialize();
     }
     get state() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f"); }
     get method() { return __classPrivateFieldGet(this, _WorkerWrapper_method, "f"); }
     get bytes() { return __classPrivateFieldGet(this, _WorkerWrapper_methodBytes, "f"); }
     get url() { return __classPrivateFieldGet(this, _WorkerWrapper_url, "f"); }
-    get callback() { return this._callback; }
-    get name() { return __classPrivateFieldGet(this, _WorkerWrapper_name, "f"); }
-    get isSleeping() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === States.SLEEPING; }
-    get isRunning() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === States.RUNNING; }
-    get isReady() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === States.READY; }
+    get isSleeping() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === State.SLEEPING; }
+    get isRunning() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === State.RUNNING; }
+    get isReady() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === State.READY; }
 }
-_WorkerWrapper_worker = new WeakMap(), _WorkerWrapper_method = new WeakMap(), _WorkerWrapper_methodBytes = new WeakMap(), _WorkerWrapper_blob = new WeakMap(), _WorkerWrapper_url = new WeakMap(), _WorkerWrapper_state = new WeakMap(), _WorkerWrapper_response = new WeakMap(), _WorkerWrapper_responseResolve = new WeakMap(), _WorkerWrapper_controller = new WeakMap(), _WorkerWrapper_name = new WeakMap();
+_WorkerWrapper_callback = new WeakMap(), _WorkerWrapper_worker = new WeakMap(), _WorkerWrapper_method = new WeakMap(), _WorkerWrapper_methodBytes = new WeakMap(), _WorkerWrapper_blob = new WeakMap(), _WorkerWrapper_url = new WeakMap(), _WorkerWrapper_state = new WeakMap(), _WorkerWrapper_response = new WeakMap(), _WorkerWrapper_responseResolve = new WeakMap();

@@ -1,47 +1,25 @@
-import {Nullable} from "../helpers/Types"
-import {WorkerWrapperInterface} from "../helpers/Interfaces"
-
-import ThreadsController from "./ThreadsController"
-
-
-
-
-type State = States.RUNNING | States.READY | States.SLEEPING
-enum States{
-    RUNNING = 'running',
-    READY = 'ready',
-    SLEEPING = 'sleeping',
-}
-
+import {WorkerWrapperInterface} from '../helpers/Interfaces'
+import {Nullable, WorkerState as State} from '../helpers/Types'
 export default class WorkerWrapper implements WorkerWrapperInterface{
-    #worker: Nullable<Worker>
-    private _callback = async (message: MessageEvent) => {
+    #callback = async (message: MessageEvent) => {
         this.#response = message.data
-        this.#state = States.READY
+        this.#state = State.READY
         this.#responseResolve()
     }
 
+    #worker: Nullable<Worker>
     #method: Nullable<Function> = null
     #methodBytes: Nullable<Uint8Array> = null
     #blob: Nullable<Blob> = null
     #url: Nullable<string> = null
-    #state: State
+    #state: State = State.SLEEPING
 
     #response: any = null
     #responseResolve = function (){ /* populate resolve */ }
 
+    constructor() {}
 
-    readonly #controller: ThreadsController
-    readonly #name: string
-
-    constructor(name: string, controller: ThreadsController) {
-        this.#name = name
-        this.#controller = controller
-
-        this.#state = States.SLEEPING
-    }
-
-    create(method: Nullable<Function> = null){
+    initialize(method: Nullable<Function> = null){
         if(!this.isSleeping || (typeof method !== 'function' && this.#method === null)) return
         this.#method = method || this.#method
         this.#methodBytes = new TextEncoder().encode(`onmessage = ${this.#method}`)
@@ -49,25 +27,20 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
         this.#url = URL.createObjectURL(this.#blob)
 
         this.#worker = new Worker(this.#url)
-        this.#worker.onmessage = this._callback
+        this.#worker.onmessage = this.#callback
 
-        this.#state = States.READY
+        this.#state = State.READY
     }
 
     async run(message: any = null){
         if (!this.isReady || !(this.#worker instanceof Worker)) return
 
         this.#worker.postMessage(message)
-        this.#state = States.RUNNING
+        this.#state = State.RUNNING
 
         return new Promise(resolve => {
             this.#responseResolve = () => resolve(this.#response)
         })
-    }
-
-    restart(){
-        this.softTerminate()
-        this.create()
     }
 
     softTerminate(){
@@ -75,38 +48,31 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
         this.#worker.terminate()
         this.#worker = null
 
-        this.#state = States.SLEEPING
+        this.#state = State.SLEEPING
     }
 
     terminate(){
         if(this.isSleeping || !(this.#worker instanceof Worker)) return
+        this.softTerminate()
 
         this.#method = null
         this.#methodBytes = null
         this.#blob = null
         this.#url = null
-
-        this.#worker.terminate()
-        this.#worker = null
-
-        this.#state = States.SLEEPING
     }
 
-    destroy(){
-        this.terminate()
-        delete this.#controller[this.name as keyof ThreadsController]
-        //delete this
+    restart(){
+        this.softTerminate()
+        this.initialize()
     }
 
     get state(){ return this.#state }
     get method(){ return this.#method }
     get bytes(){ return this.#methodBytes }
     get url(){ return this.#url }
-    get callback(){ return this._callback }
-    get name(){ return this.#name }
 
-    get isSleeping(){ return this.#state === States.SLEEPING }
-    get isRunning(){ return this.#state === States.RUNNING }
-    get isReady(){ return this.#state === States.READY }
+    get isSleeping(){ return this.#state === State.SLEEPING }
+    get isRunning(){ return this.#state === State.RUNNING }
+    get isReady(){ return this.#state === State.READY }
 
 }
