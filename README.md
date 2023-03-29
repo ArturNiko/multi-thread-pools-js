@@ -285,4 +285,5 @@ MTPC.threads[0].pool[0].isSleeping //worker is sleeping?
 | 0.4.0   | change  | 28.03.23 | Threads are pools of worker wrappers.                         |
 | 0.4.0   | feature | 28.03.23 | Pools are able to chain functions 🤩.                         |
 | 0.4.0   | change  | 28.03.23 | Workers are now getting initialized my `initialize` method.   |
+| 0.4.1   |   fix   | 29.03.23 | Fixed method parsing for static and regular class methods.    |
 
