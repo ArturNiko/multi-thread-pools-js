@@ -18,11 +18,9 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
     #responseResolve = function (){ /* populate resolve */ }
 
     constructor() {}
-
     initialize(method: Nullable<Function> = null){
         if(!this.isSleeping || (typeof method !== 'function' && this.#method === null)) return
-        this.#method = method || this.#method
-        this.#methodBytes = new TextEncoder().encode(`onmessage = ${this.#method}`)
+        this.#methodBytes = new TextEncoder().encode(`onmessage = ${this.#prepareMethodString(method)}`)
         this.#blob = new Blob([this.#methodBytes], {type: 'text/javascript'})
         this.#url = URL.createObjectURL(this.#blob)
 
@@ -41,6 +39,20 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
         return new Promise(resolve => {
             this.#responseResolve = () => resolve(this.#response)
         })
+    }
+
+    #prepareMethodString(method: Nullable<Function>): string{
+        this.#method = method || this.#method
+
+        if(!this.#method) return ''
+
+        const parts: string[] = this.#method.toString().split('(')
+        let methodString: string = ''
+        for (let i = 0; i < parts.length; i++){
+            methodString += !i ? 'function' : parts[i]
+            if(parts.length - 1 !== i) methodString += '('
+        }
+        return methodString
     }
 
     softTerminate(){
