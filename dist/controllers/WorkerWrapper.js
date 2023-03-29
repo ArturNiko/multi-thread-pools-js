@@ -18,10 +18,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _WorkerWrapper_callback, _WorkerWrapper_worker, _WorkerWrapper_method, _WorkerWrapper_methodBytes, _WorkerWrapper_blob, _WorkerWrapper_url, _WorkerWrapper_state, _WorkerWrapper_response, _WorkerWrapper_responseResolve;
+var _WorkerWrapper_instances, _WorkerWrapper_callback, _WorkerWrapper_worker, _WorkerWrapper_method, _WorkerWrapper_methodBytes, _WorkerWrapper_blob, _WorkerWrapper_url, _WorkerWrapper_state, _WorkerWrapper_response, _WorkerWrapper_responseResolve, _WorkerWrapper_prepareMethodString;
 import { WorkerState as State } from '../helpers/Types';
 export default class WorkerWrapper {
     constructor() {
+        _WorkerWrapper_instances.add(this);
         _WorkerWrapper_callback.set(this, (message) => __awaiter(this, void 0, void 0, function* () {
             __classPrivateFieldSet(this, _WorkerWrapper_response, message.data, "f");
             __classPrivateFieldSet(this, _WorkerWrapper_state, State.READY, "f");
@@ -39,8 +40,7 @@ export default class WorkerWrapper {
     initialize(method = null) {
         if (!this.isSleeping || (typeof method !== 'function' && __classPrivateFieldGet(this, _WorkerWrapper_method, "f") === null))
             return;
-        __classPrivateFieldSet(this, _WorkerWrapper_method, method || __classPrivateFieldGet(this, _WorkerWrapper_method, "f"), "f");
-        __classPrivateFieldSet(this, _WorkerWrapper_methodBytes, new TextEncoder().encode(`onmessage = ${__classPrivateFieldGet(this, _WorkerWrapper_method, "f")}`), "f");
+        __classPrivateFieldSet(this, _WorkerWrapper_methodBytes, new TextEncoder().encode(`onmessage = ${__classPrivateFieldGet(this, _WorkerWrapper_instances, "m", _WorkerWrapper_prepareMethodString).call(this, method)}`), "f");
         __classPrivateFieldSet(this, _WorkerWrapper_blob, new Blob([__classPrivateFieldGet(this, _WorkerWrapper_methodBytes, "f")], { type: 'text/javascript' }), "f");
         __classPrivateFieldSet(this, _WorkerWrapper_url, URL.createObjectURL(__classPrivateFieldGet(this, _WorkerWrapper_blob, "f")), "f");
         __classPrivateFieldSet(this, _WorkerWrapper_worker, new Worker(__classPrivateFieldGet(this, _WorkerWrapper_url, "f")), "f");
@@ -86,4 +86,16 @@ export default class WorkerWrapper {
     get isRunning() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === State.RUNNING; }
     get isReady() { return __classPrivateFieldGet(this, _WorkerWrapper_state, "f") === State.READY; }
 }
-_WorkerWrapper_callback = new WeakMap(), _WorkerWrapper_worker = new WeakMap(), _WorkerWrapper_method = new WeakMap(), _WorkerWrapper_methodBytes = new WeakMap(), _WorkerWrapper_blob = new WeakMap(), _WorkerWrapper_url = new WeakMap(), _WorkerWrapper_state = new WeakMap(), _WorkerWrapper_response = new WeakMap(), _WorkerWrapper_responseResolve = new WeakMap();
+_WorkerWrapper_callback = new WeakMap(), _WorkerWrapper_worker = new WeakMap(), _WorkerWrapper_method = new WeakMap(), _WorkerWrapper_methodBytes = new WeakMap(), _WorkerWrapper_blob = new WeakMap(), _WorkerWrapper_url = new WeakMap(), _WorkerWrapper_state = new WeakMap(), _WorkerWrapper_response = new WeakMap(), _WorkerWrapper_responseResolve = new WeakMap(), _WorkerWrapper_instances = new WeakSet(), _WorkerWrapper_prepareMethodString = function _WorkerWrapper_prepareMethodString(method) {
+    __classPrivateFieldSet(this, _WorkerWrapper_method, method || __classPrivateFieldGet(this, _WorkerWrapper_method, "f"), "f");
+    if (!__classPrivateFieldGet(this, _WorkerWrapper_method, "f"))
+        return '';
+    const parts = __classPrivateFieldGet(this, _WorkerWrapper_method, "f").toString().split('(');
+    let methodString = '';
+    for (let i = 0; i < parts.length; i++) {
+        methodString += !i ? 'function' : parts[i];
+        if (parts.length - 1 !== i)
+            methodString += '(';
+    }
+    return methodString;
+};
