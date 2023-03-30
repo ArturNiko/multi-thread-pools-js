@@ -1,0 +1,40 @@
+{
+  "name": "multi-thread-pools",
+  "version": "0.5.0",
+  "author": "Artur Papikian",
+  "license": "MIT",
+  "description": "Light and easy JS tool for accessing multiple threads via web workers.",
+
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "comment//": "publish: pnpm build --onSuccess 'echo 1' for later automations...",
+  "scripts": {
+    "clear": "rm -rf ./dist",
+    "build": "pnpm clear && tsup src/index.ts --format cjs,esm --dts --clean",
+    "watch": "pnpm build --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArturNiko/multithread-js.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.2.0"
+  },
+  "keywords": [
+    "multithreading",
+    "multithread",
+    "multicore",
+    "workers",
+    "pools",
+    "typescript",
+    "ts"
+  ]
+}
