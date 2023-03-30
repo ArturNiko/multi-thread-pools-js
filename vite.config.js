@@ -6,6 +6,6 @@ export default defineConfig({
         target: "es2015",
     },
     esbuild: {
-        include: ["main.js"]
+        include: ["index.js"]
     }
 })

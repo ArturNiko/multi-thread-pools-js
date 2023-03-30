@@ -8,7 +8,7 @@ export enum WorkerState{
 
 export enum PoolMode {
     KEEP_ALIVE  = 'keep_alive',
-    FKARR       = 'fkarr', //First Keep Alive, Rest Remove
+    FKARR       = 'fkarr',  //First Keep Alive, Rest Remove
     REMOVE      = 'remove'
 }
 
