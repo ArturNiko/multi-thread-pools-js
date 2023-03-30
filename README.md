@@ -5,16 +5,22 @@
 <br />
 
 
+## Features 
+
+- Access to multiple threads.
+- Possibility to chain workers for each inidividual thread (Up to 64).
+- Multiple moduses for each thread pool (keep alive | remove | First Keep Alive Rest Remove).
+- Race and regular modus for all threads.
+<br />
+
+
 ## Notes
 
-------------------------------------------------------------------------------------------------------------
-
 Current version of the module is `< 1.0.0`, so it could be unstable.
+<br />
 
 
 ## General
-
-------------------------------------------------------------------------------------------------------------
 
 ```javascript
 import MTPC from 'multi-thread-pools'
@@ -91,9 +97,8 @@ MTPC.threadsMode
 ```
 <br />
 
-## Individual pool
 
-------------------------------------------------------------------------------------------------------------
+## Individual pool
 
 After we initialized threads we can access our pools.
 
@@ -202,12 +207,10 @@ MTPC.threads[0].isRemoving //Pool removes all workers?
  */
 MTPC.threads[0].pool[0].mode
 ```
-
 <br />
 
-## Individual thread
 
-------------------------------------------------------------------------------------------------------------
+## Individual thread
 
 After adding workers in our thread pools, we can access each of them in `pool` sub key of WorkerPool class.
 
@@ -272,9 +275,8 @@ MTPC.threads[0].pool[0].isSleeping //worker is sleeping?
 ```
 <br />
 
-## Changes
 
-------------------------------------------------------------------------------------------------------------
+## Changes
 
 | Version |  Type   |   Date   | Description                                                   |
 |---------|:-------:|:--------:|:--------------------------------------------------------------|
