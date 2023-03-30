@@ -285,5 +285,5 @@ MTPC.threads[0].pool[0].isSleeping //worker is sleeping?
 | 0.4.0   | feature | 28.03.23 | Pools are able to chain functions 🤩.                         |
 | 0.4.0   | change  | 28.03.23 | Workers are now getting initialized my `initialize` method.   |
 | 0.4.1   |  fix⚠️  | 29.03.23 | Fixed method parsing for static and regular class methods.    |
-| 0.4.2   |  fix⚠️  | 30.03.23 | Finally fixed import for npm.                                 |
-| 0.4.2   | feature | 30.03.23 | Finally added `require` support.                              |
+| 0.5.0   |  fix⚠️  | 30.03.23 | Finally fixed import for npm.                                 |
+| 0.5.0   | feature | 30.03.23 | Finally added `require` support.                              |
