@@ -196,7 +196,7 @@ MTPC.threads[0].isRemoving //Pool removes all workers?
  * @type 'keep_alive'|'fkarr'|'remove'
  * @description sets pool mode.
  * 'keep_alive' After running thread, all workers remain.
- * 'fkarr' After running thread, only irst worker remains.
+ * 'fkarr' After running thread, only first worker remains.
  * 'remove' After running thread, all workers are getting removed.
  * 
  */
