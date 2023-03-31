@@ -1,9 +1,7 @@
-import {ThreadsInterface} from '../helpers/Interfaces'
 import {PoolMode, ThreadsControllerMode as Mode} from '../helpers/Types'
+import {ThreadsInterface} from '../helpers/Interfaces'
+
 import WorkersPool from './WorkersPool'
-
-
-
 
 export default class MultiThreadPoolController implements ThreadsInterface {
     readonly #threadPrefix: string = 'Thread_'

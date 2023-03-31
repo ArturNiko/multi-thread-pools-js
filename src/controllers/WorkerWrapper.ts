@@ -1,5 +1,7 @@
-import {WorkerWrapperInterface} from '../helpers/Interfaces'
 import {Nullable, WorkerState as State} from '../helpers/Types'
+import {WorkerWrapperInterface} from '../helpers/Interfaces'
+
+import MethodStringParser from './MethodStringParser'
 export default class WorkerWrapper implements WorkerWrapperInterface{
     #callback = async (message: MessageEvent) => {
         this.#response = message.data
@@ -9,6 +11,7 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
 
     #worker: Nullable<Worker>
     #method: Nullable<Function> = null
+    #scope: NonNullable<Object> = window //returns {} if undefined|null
     #methodBytes: Nullable<Uint8Array> = null
     #blob: Nullable<Blob> = null
     #url: Nullable<string> = null
@@ -20,7 +23,9 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
     constructor() {}
     initialize(method: Nullable<Function> = null){
         if(!this.isSleeping || (typeof method !== 'function' && this.#method === null)) return
-        this.#methodBytes = new TextEncoder().encode(`onmessage = ${this.#prepareMethodString(method)}`)
+        const methodString = new MethodStringParser(method).prepare()
+        console.log(methodString)
+        this.#methodBytes = new TextEncoder().encode(`onmessage = ${methodString}`)
         this.#blob = new Blob([this.#methodBytes], {type: 'text/javascript'})
         this.#url = URL.createObjectURL(this.#blob)
 
@@ -39,20 +44,6 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
         return new Promise(resolve => {
             this.#responseResolve = () => resolve(this.#response)
         })
-    }
-
-    #prepareMethodString(method: Nullable<Function>): string{
-        this.#method = method || this.#method
-
-        if(!this.#method) return ''
-
-        const parts: string[] = this.#method.toString().split('(')
-        let methodString: string = ''
-        for (let i = 0; i < parts.length; i++){
-            methodString += !i ? 'function' : parts[i]
-            if(parts.length - 1 !== i) methodString += '('
-        }
-        return methodString
     }
 
     softTerminate(){
@@ -82,9 +73,12 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
     get method(){ return this.#method }
     get bytes(){ return this.#methodBytes }
     get url(){ return this.#url }
-
+    get scope(){ return this.#scope }
     get isSleeping(){ return this.#state === State.SLEEPING }
     get isRunning(){ return this.#state === State.RUNNING }
     get isReady(){ return this.#state === State.READY }
 
+    set scope(scope: NonNullable<Object>){
+        this.#scope = scope
+    }
 }

@@ -18,13 +18,13 @@
 
         MTPC.threads[0].mode = 'fkarr'
         console.log(MTPC.threads[0].pool)
-        console.log(await MTPC.threads[0].run('first run 🥸.'))
+        console.log(await MTPC.threads[0].run('first run 🥸.', 'd'))
         console.log(MTPC.threads[0].pool)
 
 
 
 
-        function testFunc(message) {
+        function testFunc(message, test) {
             const start = performance.now()
             let value = 0
             for (let i = 0; i < 1000000000; i++) value += i

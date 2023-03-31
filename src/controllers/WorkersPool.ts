@@ -1,7 +1,8 @@
-import WorkerWrapper from './WorkerWrapper'
 import {PoolMode, PoolMode as Mode} from '../helpers/Types'
-import MultiThreadPoolController from './MultiThreadPoolController'
 import {WorkersPoolInterface} from '../helpers/Interfaces'
+
+import WorkerWrapper from './WorkerWrapper'
+import MultiThreadPoolController from './MultiThreadPoolController'
 
 export default class WorkersPool implements WorkersPoolInterface{
     #pool: WorkerWrapper[] = []
@@ -29,10 +30,7 @@ export default class WorkersPool implements WorkersPoolInterface{
         return new Promise(async resolve => {
             for (let i = 0; i < this.#pool.length; i++){
                 message = await this.#pool[i].run(message)
-                if(this.isRemoving || (this.isFKARR && i > 0)) {
-                    i--
-                    this.remove(i)
-                }
+                if(this.isRemoving || (this.isFKARR && i > 0)) this.remove(--i)
             }
             resolve(message)
         })
