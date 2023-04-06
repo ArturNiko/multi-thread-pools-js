@@ -1,5 +1,5 @@
-import MultiThreadPoolController from './controllers/MultiThreadPoolController'
+import MultithreadingController from './controllers/MultithreadingController'
 
-const MTPC = new MultiThreadPoolController()
-export default MTPC
+const MC = new MultithreadingController()
+export default MC
 

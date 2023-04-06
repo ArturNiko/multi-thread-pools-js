@@ -13,7 +13,7 @@ export enum PoolMode {
 }
 
 
-export enum ThreadsControllerMode {
+export enum RunMode {
     REGULAR     = 'regular',
     RACE        = 'race',
 }
