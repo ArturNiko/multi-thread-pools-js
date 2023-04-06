@@ -8,31 +8,38 @@
 <body>
 <div id="app"></div>
 <script type="module">
-    import MTPC from "./dist/index.mjs"
+    import MC from "./dist/index.mjs"
 
     //example part
     async function initializeThreads() {
-        window.MTPC = MTPC
-        MTPC.initialize(20)
-        MTPC.threads.forEach(thread => thread.add(testFunc, testFunc))
+        window.MC = MC
+        MC.initialize(20)
+        MC.threads.forEach(thread => thread.add(testFunc, testFunc, testFunc))
 
-        MTPC.threads[0].mode = 'fkarr'
-        console.log(MTPC.threads[0].pool)
-        console.log(await MTPC.threads[0].run('first run 🥸.', 'd'))
-        console.log(MTPC.threads[0].pool)
+        MC.threads[0].mode = 'fkarr'
+        console.log(MC.threads[0].pool)
+        console.log(await MC.run(0, {
+            message: 'first run 🥸.',
+            test: 0,
+            exec_time: 0,
+            this_will_be_ignored: 'Ok Imma head out' //because it's not defined in parameters
+        }))
+        console.log(MC.threads[0].pool)
 
 
 
 
-        function testFunc(message, test) {
+        function testFunc(message, test, exec_time) {
             const start = performance.now()
             let value = 0
             for (let i = 0; i < 1000000000; i++) value += i
 
-            const lastTime = message.data && message.data.exec_time ? message.data.exec_time :  0
             postMessage({
-                exec_time: performance.now() - start + lastTime,
-                message: message.data
+                exec_time: performance.now() - start + exec_time,
+                message: message,
+                test: test + (value % 10),
+                this_will_be_ignored_too: 'NOOO'
+                //'this_will_be_ignored_too' will not been acknowledged by the next worker Q.Q (I'll do that better).
             })
         }
     }

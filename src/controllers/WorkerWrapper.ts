@@ -1,7 +1,7 @@
-import {Nullable, WorkerState as State} from '../helpers/Types'
-import {WorkerWrapperInterface} from '../helpers/Interfaces'
+import {Nullable, WorkerState as State} from '../types/Types'
+import {WorkerWrapperInterface} from '../types/Interfaces'
 
-import MethodStringParser from './MethodStringParser'
+import WorkerWrapperHelper from './WorkerWrapperHelper'
 export default class WorkerWrapper implements WorkerWrapperInterface{
     #callback = async (message: MessageEvent) => {
         this.#response = message.data
@@ -11,21 +11,21 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
 
     #worker: Nullable<Worker>
     #method: Nullable<Function> = null
-    #scope: NonNullable<Object> = window //returns {} if undefined|null
+    #scope: NonNullable<{ [key: string]: any }> = {} //returns {} if undefined|null
     #methodBytes: Nullable<Uint8Array> = null
     #blob: Nullable<Blob> = null
     #url: Nullable<string> = null
     #state: State = State.SLEEPING
 
-    #response: any = null
+    #response: any = {}
     #responseResolve = function (){ /* populate resolve */ }
 
+    #helper: WorkerWrapperHelper = new WorkerWrapperHelper(null)
     constructor() {}
     initialize(method: Nullable<Function> = null){
         if(!this.isSleeping || (typeof method !== 'function' && this.#method === null)) return
-        const methodString = new MethodStringParser(method).prepare()
-        console.log(methodString)
-        this.#methodBytes = new TextEncoder().encode(`onmessage = ${methodString}`)
+        this.#helper.method = method ?? this.#method
+        this.#methodBytes = new TextEncoder().encode(`onmessage = ${this.#helper.methodString}`)
         this.#blob = new Blob([this.#methodBytes], {type: 'text/javascript'})
         this.#url = URL.createObjectURL(this.#blob)
 
@@ -35,14 +35,18 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
         this.#state = State.READY
     }
 
-    async run(message: any = null){
-        if (!this.isReady || !(this.#worker instanceof Worker)) return
-
-        this.#worker.postMessage(message)
+    async run(message: any, scope?: NonNullable<{ [key: string]: any }>): Promise<any>{
+        if (!this.isReady || !(this.#worker instanceof Worker)) return {}
+        this.#worker.postMessage(this.#helper.prepareMessage(message, scope ?? this.#scope))
         this.#state = State.RUNNING
-
         return new Promise(resolve => {
-            this.#responseResolve = () => resolve(this.#response)
+            this.#responseResolve = () => {
+                if(scope && this.#response['MTPC_this'] !== undefined) Object.entries(this.#response['MTPC_this']).forEach(entry => {
+                    const [key ,value] = entry
+                    if(scope.hasOwnProperty(key)) scope[key] = value
+                })
+                resolve(this.#response)
+            }
         })
     }
 
@@ -72,13 +76,14 @@ export default class WorkerWrapper implements WorkerWrapperInterface{
     get state(){ return this.#state }
     get method(){ return this.#method }
     get bytes(){ return this.#methodBytes }
+    get blob(){ return this.#blob }
     get url(){ return this.#url }
     get scope(){ return this.#scope }
     get isSleeping(){ return this.#state === State.SLEEPING }
     get isRunning(){ return this.#state === State.RUNNING }
     get isReady(){ return this.#state === State.READY }
 
-    set scope(scope: NonNullable<Object>){
+    set scope(scope: NonNullable<{ [key: string]: any }>){
         this.#scope = scope
     }
 }
