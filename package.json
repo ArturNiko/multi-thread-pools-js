@@ -1,6 +1,6 @@
 {
   "name": "@a4turp/multithreading",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Artur Papikian",
   "license": "MIT",
   "description": "Light and easy JS tool for accessing multiple threads via web workers.",
@@ -24,6 +24,7 @@
     "url": "git+https://github.com/ArturNiko/multithread-js.git"
   },
   "devDependencies": {
+    "typescript": "^5.0.3",
     "vite": "^4.2.1"
   },
   "keywords": [
@@ -36,8 +37,5 @@
     "ts",
     "javascript",
     "js"
-  ],
-  "dependencies": {
-    "typescript": "^5.0.3"
-  }
+  ]
 }
