@@ -18,4 +18,3 @@ export enum RunMode {
     RACE        = 'race',
 }
 
-

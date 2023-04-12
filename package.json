@@ -3,7 +3,7 @@
   "version": "0.6.1",
   "author": "Artur Papikian",
   "license": "MIT",
-  "description": "Light and easy JS tool for accessing multiple threads via web workers.",
+  "description": "Light and easy web-tool for accessing multiple threads via web workers.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

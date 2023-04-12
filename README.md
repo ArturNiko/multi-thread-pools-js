@@ -1,7 +1,7 @@
 <img src="./assets/MC_Dark.png">
 
 
-### Light and easy JS tool for accessing multiple threads via web workers.
+### Light and easy web-tool for accessing multiple threads via web workers.
 <br />
 
 ## Features 
@@ -16,7 +16,8 @@
 
 ## Notes
 
-Current version of the module is `< 1.0.0`, so it could be unstable.
+This is **WEB**-tool.   
+Current version of the module is `< 1.0.0`, so it could be unstable.   
 
 <br />
 
@@ -25,6 +26,8 @@ Current version of the module is `< 1.0.0`, so it could be unstable.
 
 ```javascript
 import MC from '@a4turp/multithreading'
+//or
+const MC = require('@a4turp/multithreading').default
 
 /**
  * @param Number
@@ -303,4 +306,5 @@ MC.threads[0].pool[0].isSleeping //worker is sleeping?
 | 0.5.0   | feature | 30.03.23 | Finally added `require` support.                              |
 | 0.6.0   | feature | 07.04.23 | Support of scope modification. ⭐️                             |
 | 0.6.0   | change  | 07.04.23 | Pool access shortcuts.                                        |
+| 0.6.2   |  fix⚠️  | 12.04.23 | Fixed module `requiring`.                                     |
 
