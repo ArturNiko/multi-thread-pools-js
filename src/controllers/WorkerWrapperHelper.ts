@@ -67,7 +67,9 @@ export default class WorkerWrapperHelper implements WorkerWrapperHelperInterface
         this.#methodString = this.#methodString.replace(/\(([^)]+)\)/, ' (message)')
     }
 
-    get methodString() { return this.#methodString }
+    get methodString() {
+        return this.#methodString
+    }
 
     set method(method: Nullable<Function>) {
         this.#method = method
