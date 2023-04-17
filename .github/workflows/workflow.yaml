@@ -15,21 +15,23 @@ jobs:
   test:
     name: 🧪 test and deploy 🚀
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18 ]
     steps:
       - name: 📚 checkout
         uses: actions/checkout@v3
-      - name: pnpm
+      - name: 📦 pnpm
         uses: pnpm/action-setup@v2
         with:
           version: latest
-      - name: 🟢 node
+      - name: 🟢 node ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 18.*
+          node-version: ${{ matrix.node-version }}
           cache: pnpm
-          cache-dependency-path: '**/pnpm-lock.yaml'
       - name: ⬇️ install
-        run: pnpm ci
+        run: pnpm i
       - name: 🏗️ build
         run: pnpm build
       - name: 🧪 test
