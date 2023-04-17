@@ -13,13 +13,6 @@ dist
 dist-ssr
 *.local
 
-# Configs
-vite.config.js
-jest.config.js
-
-# Locks
-pnpm-lock.yaml
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
