@@ -9,12 +9,14 @@ lerna-debug.log*
 
 node_modules
 assets
+.github
 dist
 dist-ssr
 *.local
 
 # Configs
 vite.config.js
+jest.config.js
 
 # Locks
 pnpm-lock.yaml
