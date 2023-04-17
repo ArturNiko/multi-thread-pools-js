@@ -30,6 +30,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
+          registry-url: https://registry.npmjs.org
       - name: ⬇️ install
         run: pnpm install --frozen-lockfile
       - name: 🏗️ build
@@ -37,6 +38,6 @@ jobs:
       - name: 🧪 test
         run: pnpm test
       - name: 🚀 deploy
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
