@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 18.*
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: '**/pnpm-lock.yaml'
       - name: ⬇️ install
         run: pnpm ci
       - name: 🏗️ build
