@@ -37,6 +37,6 @@ jobs:
       - name: 🧪 test
         run: pnpm test
       - name: 🚀 deploy
-        run: pnpm deploy
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
