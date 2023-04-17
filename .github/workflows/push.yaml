@@ -34,7 +34,8 @@ jobs:
         run: pnpm build
       - name: 🧪 test
         run: pnpm test
-      - name: 🚀 deploy
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+
+      # - name: 🚀 deploy
+      #  run: npm publish --access public
+      #  env:
+      #    NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}

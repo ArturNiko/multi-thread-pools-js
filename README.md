@@ -308,4 +308,5 @@ MC.threads[0].pool[0].isSleeping //worker is sleeping?
 | 0.6.0   | change  | 07.04.23 | Pool access shortcuts.                                        |
 | 0.6.2   |  fix⚠️  | 12.04.23 | Fixed module `requiring`.                                     |
 | 0.6.3   |  fix⚠️  | 12.04.23 | Removed assets.                                               |
+| 0.6.*   |  dev🧪  | 17.04.23 | Development changes, no                                       |
 
