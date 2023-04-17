@@ -30,17 +30,20 @@ export default class MultithreadingController implements MultithreadingInterface
         this.threads.forEach(thread => {
             //Testing
             thread.terminate()
-            const testFunc = function (message: any) {
+            const testFunc = function (text: any) {
                 const start = performance.now()
                 let value = 0
                 for (let i = 0; i < 1000000000; i++) value += i
-                postMessage({exec_time: performance.now() - start, message: message.data})
+                postMessage({
+                        exec_time: performance.now() - start,
+                        message: text
+                })
             }
 
             thread.add(testFunc)
         })
 
-        return await this.all('test done!')
+        return await this.all({text: 'Done!'})
     }
 
     public destroy(id: number): void {
