@@ -16,9 +16,6 @@ dist-ssr
 # Configs
 vite.config.js
 
-# Locks
-pnpm-lock.yaml
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
