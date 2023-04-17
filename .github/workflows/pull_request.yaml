@@ -1,0 +1,36 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+
+name: NPM Test and Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: 🧪 test and deploy 🚀
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18 ]
+    steps:
+      - name: 📚 checkout
+        uses: actions/checkout@v3
+      - name: 📦 pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - name: 🟢 node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - name: ⬇️ install
+        run: pnpm install --frozen-lockfile
+      - name: 🏗️ build
+        run: pnpm build
+      - name: 🧪 test
+        run: pnpm test
