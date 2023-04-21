@@ -8,7 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-assets
 .github
 src
 dist-ssr
@@ -32,3 +31,6 @@ pnpm-lock.yaml
 *.njsproj
 *.sln
 *.sw?
+
+
+# Temporary
