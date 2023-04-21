@@ -16,8 +16,7 @@
 
 ## Notes
 
-This is **WEB**-tool.   
-Current version of the module is `< 1.0.0`, so it could be unstable.   
+This is **WEB**-tool.
 
 <br />
 
@@ -293,20 +292,21 @@ MC.threads[0].pool[0].isSleeping //worker is sleeping?
 
 ## Changes
 
-| Version |  Type   |   Date   | Description                                                   |
-|---------|:-------:|:--------:|:--------------------------------------------------------------|
-| 0.2.0   | change  | 10.02.23 | Callback is not editable.                                     |
-| 0.4.0   | change  | 28.03.23 | Threads limit changed to `navigator.hardwareConcurrency` - 1. |
-| 0.4.0   | change  | 28.03.23 | Threads are located in 'threads' array parameter.             |
-| 0.4.0   | change  | 28.03.23 | Threads are pools of worker wrappers.                         |
-| 0.4.0   | feature | 28.03.23 | Pools are able to chain functions. 🤩                         |
-| 0.4.0   | change  | 28.03.23 | Workers are now getting initialized my `initialize` method.   |
-| 0.4.1   |  fix⚠️  | 29.03.23 | Fixed method parsing for static and regular class methods.    |
-| 0.5.0   |  fix⚠️  | 30.03.23 | Finally fixed import for npm.                                 |
-| 0.5.0   | feature | 30.03.23 | Finally added `require` support.                              |
-| 0.6.0   | feature | 07.04.23 | Support of scope modification. ⭐️                             |
-| 0.6.0   | change  | 07.04.23 | Pool access shortcuts.                                        |
-| 0.6.2   |  fix⚠️  | 12.04.23 | Fixed module `requiring`.                                     |
-| 0.6.3   |  fix⚠️  | 12.04.23 | Removed assets.                                               |
-| 0.6.*   |  dev🧪  | 17.04.23 | Development changes.                                          |
+| Version |  Type   |   Date   | Description                                                      |
+|---------|:-------:|:--------:|:-----------------------------------------------------------------|
+| 0.2.0   | change  | 10.02.23 | Callback is not editable.                                        |
+| 0.4.0   | change  | 28.03.23 | Threads limit changed to `navigator.hardwareConcurrency` - 1.    |
+| 0.4.0   | change  | 28.03.23 | Threads are located in 'threads' array parameter.                |
+| 0.4.0   | change  | 28.03.23 | Threads are pools of worker wrappers.                            |
+| 0.4.0   | feature | 28.03.23 | Pools are able to chain functions. 🤩                            |
+| 0.4.0   | change  | 28.03.23 | Workers are now getting initialized my `initialize` method.      |
+| 0.4.1   |  fix⚠️  | 29.03.23 | Fixed method parsing for static and regular class methods.       |
+| 0.5.0   |  fix⚠️  | 30.03.23 | Finally fixed import for npm.                                    |
+| 0.5.0   | feature | 30.03.23 | Finally added `require` support.                                 |
+| 0.6.0   | feature | 07.04.23 | Support of scope modification. ⭐️                                |
+| 0.6.0   | change  | 07.04.23 | Pool access shortcuts.                                           |
+| 0.6.2   |  fix⚠️  | 12.04.23 | Fixed module `requiring`.                                        |
+| 0.6.3   |  fix⚠️  | 12.04.23 | Removed assets.                                                  |
+| 0.6.*   |  dev🧪  | 17.04.23 | Development changes.                                             |
+| 1.0.0   |  fix⚠️  | 17.04.23 | Fixed short key assigning issue.                                 |
 

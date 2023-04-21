@@ -1,6 +1,6 @@
 {
   "name": "@a4turp/multithreading",
-  "version": "0.6.6",
+  "version": "1.0.0",
   "author": "Artur Papikian",
   "license": "MIT",
   "description": "Light and easy web-tool for accessing multiple threads via web workers.",
