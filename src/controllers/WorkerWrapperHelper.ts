@@ -1,7 +1,7 @@
 import {Nullable} from '../types/Types'
 import {WorkerWrapperHelperInterface} from '../types/Interfaces'
 
-export default class WorkerWrapperHelper implements WorkerWrapperHelperInterface{
+export default class WorkerWrapperHelper implements WorkerWrapperHelperInterface {
     #method: Nullable<Function>
 
     #scope: object = {}
@@ -15,18 +15,19 @@ export default class WorkerWrapperHelper implements WorkerWrapperHelperInterface
         this.prepareString()
     }
 
-    prepareString(): string{
-        if(!this.#method) return this.#methodString
+    prepareString(): string {
+        if (!this.#method) return this.#methodString
         this.#methodString = this.#method ? this.#method.toString() : ''
         this.#getParams()
 
         this.#prepareBeginning()
+        this.#escapeAssigningShortcut()
         this.#replaceScope()
         this.#replaceParams()
         return this.#methodString
     }
 
-    prepareMessage(message: { [key: string]: any }, scope?: NonNullable<Object>): object{
+    prepareMessage(message: { [key: string]: any }, scope?: NonNullable<Object>): object {
         const newMessage: { [key: string]: any } = {}
 
         this.#params.forEach(param => newMessage[param] = (message ?? {})[param])
@@ -35,18 +36,32 @@ export default class WorkerWrapperHelper implements WorkerWrapperHelperInterface
         return newMessage
     }
 
-    #prepareBeginning(){
+    #prepareBeginning() {
         const parts: string[] = this.#methodString.split('(')
         let newMethodString: string = ''
-        for (let i = 0; i < parts.length; i++){
+        for (let i = 0; i < parts.length; i++) {
             newMethodString += !i ? 'function' : parts[i]
-            if(parts.length - 1 !== i) newMethodString += '('
+            if (parts.length - 1 !== i) newMethodString += '('
         }
         this.#methodString = newMethodString
     }
 
-    #replaceScope(){
-        if(this.#methodString.match(/\bthis\b/g)) {
+    #escapeAssigningShortcut() {
+        const postMessagePart = this.#methodString.matchAll(/(postMessage\({)([\s\S]*?)(}\))/g)
+        const postMessageKeys = postMessagePart.next().value[2].split('\n')
+        const filteredPostMessageKeys = postMessageKeys.filter((key: string) => /[a-zA-Z]/g.test(key))
+
+        for(let i = 0; i < filteredPostMessageKeys.length; i++){
+            let key = filteredPostMessageKeys[i]
+            key = key.replace(/\s/g, '')
+            if(!key.includes(':')) filteredPostMessageKeys[i] = key + ':' + key
+        }
+
+        this.#methodString = this.#methodString.replace(/(postMessage\({)([\s\S]*?)(}\))/g, `postMessage({\n${filteredPostMessageKeys.join('\n')}\n})`)
+    }
+
+    #replaceScope() {
+        if (this.#methodString.match(/\bthis\b/g)) {
             this.#methodString = this.#methodString.replace(/\bthis\b/g, 'message.data.MTPC_this')
             this.#methodString = this.#methodString.replace(/(postMessage\({)/g, '$1 MTPC_this: message.data.MTPC_this,')
         }
@@ -54,16 +69,16 @@ export default class WorkerWrapperHelper implements WorkerWrapperHelperInterface
 
     }
 
-    #getParams(){
+    #getParams() {
         const regOutput: Nullable<RegExpMatchArray> = this.#methodString.match(/\(([^)]+)\)/) // (...)
 
-        if(regOutput) {
+        if (regOutput) {
             this.#params = regOutput[1].split(',')
             for (let i = 0; this.#params.length > i; i++) this.#params[i] = this.#params[i].replace(/\s/g, '')
         }
     }
 
-    #replaceParams(){
+    #replaceParams() {
         this.#methodString = this.#methodString.replace(/\(([^)]+)\)/, ' (message)')
     }
 
