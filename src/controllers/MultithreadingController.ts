@@ -11,7 +11,8 @@ export default class MultithreadingController implements MultithreadingInterface
     #threadCount: number = 0
     #mode: Mode = Mode.REGULAR
 
-    public constructor() {}
+    public constructor() {
+    }
 
     public initialize(limit: number = 999) {
         this.#threadCount = Math.min(limit, this.#threadLimit)
@@ -30,13 +31,13 @@ export default class MultithreadingController implements MultithreadingInterface
         this.threads.forEach(thread => {
             //Testing
             thread.terminate()
-            const testFunc = function (text: any) {
+            const testFunc = function (message: any) {
                 const start = performance.now()
                 let value = 0
                 for (let i = 0; i < 1000000000; i++) value += i
                 postMessage({
-                        exec_time: performance.now() - start,
-                        message: text
+                    exec_time: performance.now() - start,
+                    message
                 })
             }
 
