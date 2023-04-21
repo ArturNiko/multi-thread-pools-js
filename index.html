@@ -15,6 +15,7 @@
         window.MC = MC
         MC.initialize(20)
 
+        /*
         MC.threads.forEach(thread => thread.add(testFunc, testFunc, testFunc))
 
         MC.threads[0].mode = 'fkarr'
@@ -26,6 +27,10 @@
             this_will_be_ignored: 'Ok Imma head out' //because it's not defined in parameters
         }))
         console.log(MC.threads[0].pool)
+
+         */
+
+        await MC.test()
 
         function testFunc(message, test, exec_time) {
             const start = performance.now()
